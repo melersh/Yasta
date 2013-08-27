@@ -19,15 +19,15 @@ def createStation():
     station.full_name = request.values.get('full_name')
     station_key = station.put()
     resp = make_response('', 201)
-    resp.headers['Location'] = '/station/' + station_key.urlsafe()
+    resp.headers['Location'] = '/station/' + str(station_key.id())
     return resp
 
-@app.route("/station/<url_string>",  methods=['GET'])
-def getStationByStationKey(url_string):
-    station_key = ndb.Key(urlsafe=url_string) 
+@app.route("/station/<int:sid>",  methods=['GET'])
+def getStationByStationKey(sid):
+    station_key = ndb.Key('Station', sid) 
     station = station_key.get()
     if station == None:
-        result = "No station found with key '" + url_string + "' !"
+        result = "No station found with id '" + str(sid) + "' !"
     else:
         result = "Found station <br>"
         result += station.full_name + "<br>"
