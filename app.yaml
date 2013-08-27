@@ -9,7 +9,7 @@ handlers:
   static_dir: _twiml
   
 - url: /.*
-  script: yasta.ivrapp.app
+  script: yasta.app
 
   
 libraries:
