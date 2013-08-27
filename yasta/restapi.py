@@ -17,20 +17,19 @@ def createStation():
     station = Station()
     station.name = request.values.get('name')
     station.full_name = request.values.get('full_name')
-    station.put()
+    station_key = station.put()
     resp = make_response('', 201)
-    resp.headers['Location'] = '/station/' + station.name
+    resp.headers['Location'] = '/station/' + station_key.urlsafe()
     return resp
 
-@app.route("/station/<station_name>",  methods=['GET'])
-def getStationByStationName(station_name):
-    qry = Station.query(Station.name == station_name)
-    stations = qry.fetch(1)
-    if len(stations) == 0:
-        result = "No station found with name '" + station_name + "' !"
+@app.route("/station/<url_string>",  methods=['GET'])
+def getStationByStationKey(url_string):
+    station_key = ndb.Key(urlsafe=url_string) 
+    station = station_key.get()
+    if station == None:
+        result = "No station found with key '" + url_string + "' !"
     else:
         result = "Found station <br>"
-        for station in stations:
-            result += station.full_name + "<br>"
+        result += station.full_name + "<br>"
 
     return result
